@@ -1,0 +1,21 @@
+# SQLite / DB files
+*.db
+*.sqlite
+*.sqlite3
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+.venv/
+venv/
+env/
+.conda/
+
+# Flask / dotenv
+.env
+*.log
+
+# macOS
+.DS_Store
