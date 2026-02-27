@@ -6,7 +6,7 @@ from contextlib import contextmanager
 def get_db():
     if "db" not in g:
         db_path = current_app.config["DATABASE_PATH"]
-        conn = sqlite3.connect(db_path, isolation_level=None)  # autocommit mode, we’ll BEGIN manually later
+        conn = sqlite3.connect(db_path, isolation_level=None) 
         conn.row_factory = sqlite3.Row
         conn.execute("PRAGMA foreign_keys = ON;")
         g.db = conn
