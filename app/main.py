@@ -15,12 +15,12 @@ def register_routes(app):
 
     @app.post("/orders")
     def create_order():
-        # 1) Validate Idempotency-Key header
+        # Validate Idempotency-Key header
         idem_key = request.headers.get("Idempotency-Key")
         if not idem_key:
             return jsonify({"error": "Missing Idempotency-Key header"}), 400
 
-        # 2) Validate JSON payload
+        # Validate JSON payload
         try:
             payload = request.get_json(force=True)
         except BadRequest:
@@ -38,13 +38,13 @@ def register_routes(app):
         if not isinstance(quantity, int) or quantity <= 0:
             return jsonify({"error": "quantity must be an integer > 0"}), 400
 
-        # 3) Compute request fingerprint (hash)
+        # Compute request fingerprint (hash)
         req_hash = request_fingerprint(payload)
 
-        # 4) Check debug header for failure simulation (after commit)
+        # Check debug header for failure simulation (after commit)
         fail_after_commit = request.headers.get("X-Debug-Fail-After-Commit", "").lower() in ("1", "true", "yes")
 
-        # 5) Run idempotent create inside ONE transaction
+        # Run idempotent create inside ONE transaction
         with db_txn() as db:
             # Look up existing idempotency record
             row = db.execute(
@@ -120,7 +120,7 @@ def register_routes(app):
 
             log_event("orders.create.success", idempotency_key=idem_key, order_id=order_id)
 
-        # 6) Failure simulation AFTER COMMIT
+        # Failure simulation AFTER COMMIT
         if fail_after_commit:
             # DB has already committed at this point
             log_event("orders.create.fail_after_commit", idempotency_key=idem_key)
