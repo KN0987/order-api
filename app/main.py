@@ -74,7 +74,7 @@ def register_routes(app):
                 log_event("orders.create.incomplete_record", idempotency_key=idem_key)
                 return jsonify({"error": "Idempotency record exists but no stored response"}), 500
 
-            # No idempotency record yet → create it (placeholder), then create order + ledger, then fill stored response
+            # No idempotency record yet, then create it (placeholder), then create order + ledger, then fill stored response
             now = utc_now_iso()
 
             db.execute(
@@ -96,7 +96,6 @@ def register_routes(app):
             )
 
             # Create ledger (charge)
-            # If you don't have pricing, charge = quantity is fine for the assignment.
             ledger_id = new_uuid()
             amount = quantity
             db.execute(
